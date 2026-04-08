@@ -1,0 +1,39 @@
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# Maven / Gradle
+target/
+build/
+*.iml
+.gradle/
+out/
+
+# Servidor de aplicação (Tomcat, Jetty, etc.)
+*.log
+*.tmp
+*.bak
+*.swp
+*.pid
+hs_err_pid*
+
+# Arquivos de deploy
+*.war
+*.ear
+
+# Banco de dados MySQL (dump e configs locais)
+*.sql
+*.db
+*.mysql
+*.cnf
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Configurações locais
+.env
+*.properties.local
+*.config
