@@ -1,72 +1,103 @@
 package br.com.dao;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import br.com.model.Produto;
 import br.com.util.ConnectionFactory;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProdutoDAO {
-    private Connection conn;
 
-    public ProdutoDAO() throws Exception {
-        this.conn = ConnectionFactory.getConnection();
-    }
+    public List<Produto> listar() {
+        List<Produto> produtos = new ArrayList<>();
+        String sql = "SELECT id_produto, nome_produto, preco, estoque FROM PRODUTOS ORDER BY id_produto";
 
-    // LISTAR / CONSULTAR
-    public List<Produto> listarTodos() throws SQLException {
-        List<Produto> lista = new ArrayList<>();
-        String sql = "SELECT * FROM produtos";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            lista.add(new Produto(rs.getInt("id_produto"), rs.getString("nome_produto"), 
-                      rs.getDouble("preco"), rs.getInt("estoque"), rs.getInt("id_categoria")));
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Produto produto = new Produto();
+                produto.setIdProduto(rs.getInt("id_produto"));
+                produto.setNomeProduto(rs.getString("nome_produto"));
+                produto.setPrecoProduto(rs.getDouble("preco"));
+                produto.setEstoque(rs.getInt("estoque"));
+                produtos.add(produto);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar produtos.", e);
         }
-        return lista;
+
+        return produtos;
     }
 
-    // INCLUIR
-    public void cadastrar(Produto p) throws SQLException {
-        String sql = "INSERT INTO produtos (nome_produto, preco, estoque, id_categoria) VALUES (?, ?, ?, ?)";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, p.getNome());
-        stmt.setDouble(2, p.getPreco());
-        stmt.setInt(3, p.getEstoque());
-        stmt.setInt(4, p.getIdCategoria());
-        stmt.execute();
-    }
+    public Produto buscarPorId(int id) {
+        String sql = "SELECT id_produto, nome_produto, preco, estoque FROM PRODUTOS WHERE id_produto = ?";
 
-    // EXCLUIR
-    public void excluir(int id) throws SQLException {
-        String sql = "DELETE FROM produtos WHERE id_produto = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, id);
-        stmt.execute();
-    }
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    // BUSCAR POR ID (para alteração)
-    public Produto buscarPorId(int id) throws SQLException {
-        String sql = "SELECT * FROM produtos WHERE id_produto = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, id);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return new Produto(rs.getInt("id_produto"), rs.getString("nome_produto"), 
-                   rs.getDouble("preco"), rs.getInt("estoque"), rs.getInt("id_categoria"));
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                	Produto produto = new Produto();
+                	produto.setIdProduto(rs.getInt("id_produto"));
+                	produto.setNomeProduto(rs.getString("nome_produto"));
+                	produto.setPrecoProduto(rs.getDouble("preco"));
+                	produto.setEstoque(rs.getInt("estoque"));
+                    return produto;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar produtos por ID.", e);
         }
+
         return null;
     }
 
-    // ALTERAR
-    public void alterar(Produto p) throws SQLException {
-        String sql = "UPDATE produtos SET nome_produto=?, preco=?, estoque=?, id_categoria=? WHERE id_produto=?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, p.getNome());
-        stmt.setDouble(2, p.getPreco());
-        stmt.setInt(3, p.getEstoque());
-        stmt.setInt(4, p.getIdCategoria());
-        stmt.setInt(5, p.getId());
-        stmt.execute();
+    public void inserir(Produto produto) {
+        String sql = "INSERT INTO PRODUTOS (nome_produto, preco, estoque) VALUES (?, ?, ?)";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNomeProduto());
+            stmt.setDouble(2, produto.getPrecoProduto());
+            stmt.setInt(3, produto.getEstoque());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inserir produtos.", e);
+        }
+    }
+
+    public void atualizar(Produto produto) {
+        String sql = "UPDATE PRODUTOS SET nome_produto = ?, preco = ?, estoque = ? WHERE id_produto = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNomeProduto());
+            stmt.setDouble(2, produto.getPrecoProduto());
+            stmt.setInt(3, produto.getEstoque());
+            stmt.setInt(4, produto.getIdProduto());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar produtos.", e);
+        }
+    }
+
+    public void excluir(int id) {
+        String sql = "DELETE FROM PRODUTOS WHERE id_produto = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao excluir produtos.", e);
+        }
     }
 }

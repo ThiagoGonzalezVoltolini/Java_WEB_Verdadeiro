@@ -1,7 +1,7 @@
 package br.com.web;
 
-import br.com.dao.CategoriaDAO;
-import br.com.model.Categoria;
+import br.com.dao.ProdutoDAO;
+import br.com.model.Produto;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +14,7 @@ public class ProdutoServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private final CategoriaDAO categoriaDAO = new CategoriaDAO();
+    private final ProdutoDAO ProdutoDAO = new ProdutoDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -29,7 +29,7 @@ public class ProdutoServlet extends HttpServlet {
 
         switch (acao) {
             case "novo":
-                request.getRequestDispatcher("/WEB-INF/views/categoria-form.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/produto-form.jsp").forward(request, response);
                 break;
             case "editar":
                 abrirEdicao(request, response);
@@ -49,43 +49,45 @@ public class ProdutoServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        String idCategoria = request.getParameter("idCategoria");
-        String nomeCategoria = request.getParameter("nomeCategoria");
-        String descricao = request.getParameter("descricao");
+        String idProduto = request.getParameter("idProduto");
+        String nomeProduto = request.getParameter("nomeProduto");
+        String preco = request.getParameter("preco");
+        String estoque = request.getParameter("estoque");
 
-        Categoria categoria = new Categoria();
-        categoria.setNomeCategoria(nomeCategoria);
-        categoria.setDescricao(descricao);
+        Produto produto = new Produto();
+        produto.setNomeProduto(nomeProduto);
+        produto.setPrecoProduto(Double.parseDouble(preco));
+        produto.setEstoque(Integer.parseInt(estoque));
 
-        if (idCategoria == null || idCategoria.isBlank()) {
-            categoriaDAO.inserir(categoria);
+        if (idProduto == null || idProduto.isBlank()) {
+        	ProdutoDAO.inserir(produto);
         } else {
-            categoria.setIdCategoria(Integer.parseInt(idCategoria));
-            categoriaDAO.atualizar(categoria);
+        	produto.setIdProduto(Integer.parseInt(idProduto));
+        	ProdutoDAO.atualizar(produto);
         }
 
-        response.sendRedirect(request.getContextPath() + "/categorias");
+        response.sendRedirect(request.getContextPath() + "/produtos");
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Categoria> categorias = categoriaDAO.listar();
-        request.setAttribute("listaCategorias", categorias);
-        request.getRequestDispatcher("/WEB-INF/views/categoria-consulta.jsp").forward(request, response);
+        List<Produto> produtos = ProdutoDAO.listar();
+        request.setAttribute("listaProdutos", produtos);
+        request.getRequestDispatcher("/WEB-INF/views/produto-consulta.jsp").forward(request, response);
     }
 
     private void abrirEdicao(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Categoria categoria = categoriaDAO.buscarPorId(id);
-        request.setAttribute("categoria", categoria);
-        request.getRequestDispatcher("/WEB-INF/views/categoria-form.jsp").forward(request, response);
+        Produto produto = ProdutoDAO.buscarPorId(id);
+        request.setAttribute("produto", produto);
+        request.getRequestDispatcher("/WEB-INF/views/produto-form.jsp").forward(request, response);
     }
 
     private void excluir(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        categoriaDAO.excluir(id);
-        response.sendRedirect(request.getContextPath() + "/categorias");
+        ProdutoDAO.excluir(id);
+        response.sendRedirect(request.getContextPath() + "/produtos");
     }
 }

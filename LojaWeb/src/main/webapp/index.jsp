@@ -6,6 +6,8 @@
     <title>Sistema Loja</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
+<!-- Cabeçalho aqui em cima -->
+
 <body>
 <div class="page page-center">
     <div class="hero-card">
@@ -20,6 +22,9 @@
                     <p>Consulta, inclusão, alteração e exclusão de categorias.</p>
                 </div>
             </a>
+            
+            
+            
 <!-- Em desenvolvimento -->
             <a class="menu-card" href="${pageContext.request.contextPath}/produtos">
                 <div class="menu-icon">📦</div>
@@ -29,11 +34,7 @@
                 </div>
             </a>
         </div>
-        
-        <div class="card-footer">
-    	<a href="produtos?acao=listar" class="secondary-link">Gerenciar Produtos</a>
-		</div>
-		
+
         <div class="small-actions">
             <a class="secondary-link" href="${pageContext.request.contextPath}/teste-conexao">Testar conexão com o banco</a>
         </div>
