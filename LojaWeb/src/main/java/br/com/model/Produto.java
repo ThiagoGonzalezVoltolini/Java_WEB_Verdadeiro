@@ -5,6 +5,7 @@ public class Produto {
     private String nome;
     private double preco;
     private Integer estoque;
+    private Integer idCategoria;
 
     // Construtores
     public Produto() {
@@ -15,6 +16,7 @@ public class Produto {
         this.nome = nomeProduto;
         this.preco = precoProduto;
         this.estoque = estoqueProduto;
+        this.idCategoria = idCategoriaProduto;
     }
 
 	public Integer getIdProduto() {
@@ -48,5 +50,12 @@ public class Produto {
 	public void setEstoque(Integer estoque) {
 		this.estoque = estoque;
 	}
-    
+
+	public Integer getIdCategoria() {
+		return idCategoria;
+	}
+
+	public void setIdCategoria(Integer idCategoria) {
+		this.idCategoria = idCategoria;
+	}
 }

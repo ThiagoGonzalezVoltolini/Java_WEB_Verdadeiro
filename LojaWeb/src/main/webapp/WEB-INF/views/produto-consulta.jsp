@@ -28,6 +28,7 @@
                 <th>Nome do Produto</th>
                 <th>Preço</th>
                 <th>Quantidade</th>
+                <th>Categoria</th>
                 <th class="col-actions">Ações</th>
             </tr>
             </thead>
@@ -35,7 +36,7 @@
             <c:choose>
                 <c:when test="${empty listaProdutos}">
                     <tr>
-                        <td colspan="5" class="empty-state">Nenhum produto cadastrado.</td>
+                        <td colspan="6" class="empty-state">Nenhum produto cadastrado.</td>
                     </tr>
                 </c:when>
                 <c:otherwise>
@@ -45,6 +46,18 @@
                             <td>${produto.nomeProduto}</td>
                             <td>${produto.precoProduto}</td>
                             <td>${produto.estoque}</td>
+                            <td>
+                                <c:set var="encontrado" value="false"/>
+                                <c:forEach var="categoria" items="${listaCategorias}">
+                                    <c:if test="${categoria.idCategoria == produto.idCategoria}">
+                                        ${categoria.nomeCategoria}
+                                        <c:set var="encontrado" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${!encontrado}">
+                                    <span style="color: #999;">-</span>
+                                </c:if>
+                            </td>
                             <td>
                                 <div class="action-icons">
                                     <a class="icon-link edit" title="Alterar"

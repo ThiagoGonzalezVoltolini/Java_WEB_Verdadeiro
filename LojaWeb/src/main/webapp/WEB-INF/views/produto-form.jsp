@@ -36,6 +36,19 @@
                 <input id="estoque" type="number" name="estoque" value="${produto.estoque}" min="0" required>
             </div>
 
+            <div class="form-group">
+                <label for="idCategoria">Categoria</label>
+                <select id="idCategoria" name="idCategoria" required>
+                    <option value="">-- Selecione uma categoria --</option>
+                    <c:forEach var="categoria" items="${listaCategorias}">
+                        <option value="${categoria.idCategoria}" 
+                            <c:if test="${categoria.idCategoria == produto.idCategoria}">selected</c:if>>
+                            ${categoria.nomeCategoria}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+
             <div class="form-actions">
                 <button class="btn btn-primary" type="submit">Salvar</button>
                 <a class="btn btn-secondary" href="${pageContext.request.contextPath}/produtos">Cancelar</a>
